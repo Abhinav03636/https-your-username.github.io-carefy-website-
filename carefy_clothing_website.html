@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carefy Premium Store</title>
+
+<style>
+body { margin:0; font-family: 'Segoe UI', sans-serif; background:#f8f9fb; }
+header { background: linear-gradient(90deg,#000,#333); color:white; padding:20px; text-align:center; }
+nav { display:flex; justify-content:space-between; padding:15px; background:#111; color:white; }
+.container { padding:20px; }
+.products { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+.product { background:white; padding:15px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); transition:0.3s; }
+.product:hover { transform:scale(1.05); }
+.product img { width:100%; border-radius:10px; }
+button { background:#000; color:white; padding:10px; border:none; border-radius:5px; cursor:pointer; }
+.cart { position:fixed; right:0; top:0; width:320px; height:100%; background:white; padding:15px; overflow:auto; box-shadow:-3px 0 10px rgba(0,0,0,0.1); }
+.admin { margin-top:30px; background:white; padding:15px; border-radius:10px; }
+input { padding:8px; margin:5px 0; width:100%; }
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Carefy</h1>
+<p>Premium Fashion Store</p>
+</header>
+
+<nav>
+<span>Home</span>
+<span>Shop</span>
+<span>Cart</span>
+</nav>
+
+<div class="container">
+<h2>Products</h2>
+<div class="products" id="productList"></div>
+
+<!-- ADMIN PANEL -->
+<div class="admin">
+<h3>Admin Panel (Add Product)</h3>
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<input id="image" placeholder="Image URL">
+<button onclick="addProductFromAdmin()">Add Product</button>
+</div>
+</div>
+
+<!-- CART -->
+<div class="cart">
+<h2>Cart</h2>
+<ul id="cartItems"></ul>
+<p><b>Total: ₹<span id="total">0</span></b></p>
+
+<!-- PAYMENT -->
+<h3>Pay with UPI</h3>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourupi@upi&pn=Carefy&cu=INR" width="200">
+<p>Scan & Pay</p>
+
+<button onclick="fakePayment()">Simulate Razorpay Payment</button>
+</div>
+
+<script>
+let products = [
+{ id:1, name:"Carefy T-Shirt", price:499, image:"https://via.placeholder.com/200" },
+{ id:2, name:"Carefy Hoodie", price:999, image:"https://via.placeholder.com/200" }
+];
+
+let cart = [];
+
+function displayProducts(){
+const list=document.getElementById("productList");
+list.innerHTML="";
+products.forEach(p=>{
+list.innerHTML += `
+<div class="product">
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<p>₹${p.price}</p>
+<button onclick="addToCart(${p.id})">Add to Cart</button>
+</div>`;
+});
+}
+
+function addToCart(id){
+const product=products.find(p=>p.id===id);
+cart.push(product);
+updateCart();
+}
+
+function updateCart(){
+const items=document.getElementById("cartItems");
+const total=document.getElementById("total");
+items.innerHTML="";
+let sum=0;
+cart.forEach(i=>{
+items.innerHTML+=`<li>${i.name} - ₹${i.price}</li>`;
+sum+=i.price;
+});
+total.innerText=sum;
+}
+
+// ADMIN ADD PRODUCT
+function addProductFromAdmin(){
+const name=document.getElementById("name").value;
+const price=document.getElementById("price").value;
+const image=document.getElementById("image").value;
+
+if(name && price && image){
+products.push({ id:products.length+1, name, price, image });
+displayProducts();
+alert("Product Added!");
+}
+}
+
+// PAYMENT SIMULATION
+function fakePayment(){
+alert("Payment Successful (Demo Razorpay)");
+}
+
+displayProducts();
+</script>
+
+</body>
+</html>
